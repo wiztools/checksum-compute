@@ -9,7 +9,7 @@
     <url>http://wiztools.googlecode.com</url>
     <scm>
         <connection>scm:svn:http://wiztools.googlecode.com/svn/checksum-compute/trunk/</connection>
-        <developerConnection>scm:svn:https://wiztools.googlecode.com/svn/digest-compute/trunk/</developerConnection>
+        <developerConnection>scm:svn:https://wiztools.googlecode.com/svn/checksum-compute/trunk/</developerConnection>
         <url>http://code.google.com/p/wiztools/source/browse/</url>
     </scm>
     <build>
@@ -31,7 +31,7 @@
                     </descriptorRefs>
                     <archive>
                         <manifest>
-                            <mainClass>org.wiztools.digestcompute.ChecksumComputeMain</mainClass>
+                            <mainClass>org.wiztools.checksumcompute.ChecksumComputeMain</mainClass>
                         </manifest>
                         <manifestEntries>
                             <mode>development</mode>
