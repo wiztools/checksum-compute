@@ -84,6 +84,12 @@ public class ChecksumComputeFrame extends JFrame {
             SwingUtilities.invokeLater(new Runnable() {
                 @Override
                 public void run() {
+                    // Clear the existing result:
+                    jtf_md5.setText("");
+                    jtf_sha1.setText("");
+                    jtf_sha256.setText("");
+                    
+                    // Change button icon to stop icon:
                     jb_go.setIcon(stopIcon);
                 }
             });
