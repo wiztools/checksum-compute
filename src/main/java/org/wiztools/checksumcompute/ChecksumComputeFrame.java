@@ -1,38 +1,21 @@
 package org.wiztools.checksumcompute;
 
-import java.awt.BorderLayout;
-import java.awt.Container;
-import java.awt.FlowLayout;
-import java.awt.GridLayout;
-import java.awt.Toolkit;
+import java.awt.*;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.BorderFactory;
-import javax.swing.Icon;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JFileChooser;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JProgressBar;
-import javax.swing.JTextField;
-import javax.swing.KeyStroke;
-import javax.swing.SwingUtilities;
-import javax.swing.WindowConstants;
+import javax.swing.*;
 import javax.swing.border.BevelBorder;
+import org.simplericity.macify.eawt.Application;
+import org.simplericity.macify.eawt.ApplicationEvent;
+import org.simplericity.macify.eawt.ApplicationListener;
+import org.simplericity.macify.eawt.DefaultApplication;
 import org.wiztools.commons.Charsets;
 import org.wiztools.commons.FileUtil;
 
@@ -72,6 +55,11 @@ public class ChecksumComputeFrame extends JFrame {
     private JButton jb_sha256_save = new JButton(saveIcon);
 
     private final JProgressBar jpb = new JProgressBar(0, 100);
+    
+    // Macify:
+    private final Application application = new DefaultApplication();
+    
+    private final ChecksumComputeFrame me;
 
     private final ProgressCallback progressCallback = new ProgressCallback() {
         private long totalLength;
@@ -138,6 +126,8 @@ public class ChecksumComputeFrame extends JFrame {
 
     public ChecksumComputeFrame() {
         super("WizTools.org Checksum Compute");
+        
+        me = this;
 
         init();
         initMenuBar();
@@ -197,18 +187,28 @@ public class ChecksumComputeFrame extends JFrame {
             jp.add(jpb);
             c.add(jp, BorderLayout.SOUTH);
         }
+        
+        initMacify();
 
-        this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+        this.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
         this.setLocationRelativeTo(null);
         this.setResizable(false);
         this.pack();
         this.setVisible(true);
+    }
+    
+    private void initMacify() {
+        application.addAboutMenuItem();
+        application.addApplicationListener(new MacApplicationListener());
     }
 
     private void init() {
         jtf_md5.setEditable(false);
         jtf_sha1.setEditable(false);
         jtf_sha256.setEditable(false);
+        
+        // Go button:
+        getRootPane().setDefaultButton(jb_go);
 
         // Tooltips
         jb_md5_copy.setToolTipText("Copy");
@@ -286,7 +286,8 @@ public class ChecksumComputeFrame extends JFrame {
             jmFile.setMnemonic('f');
 
             JMenuItem jmiOpen = new JMenuItem("Open");
-            jmiOpen.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, InputEvent.CTRL_MASK));
+            jmiOpen.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O,
+                    Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
             jmiOpen.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
@@ -296,7 +297,8 @@ public class ChecksumComputeFrame extends JFrame {
             jmFile.add(jmiOpen);
 
             JMenuItem jmiClear = new JMenuItem("Clear Result");
-            jmiClear.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R, InputEvent.CTRL_MASK));
+            jmiClear.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R,
+                    Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
             jmiClear.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
@@ -305,21 +307,24 @@ public class ChecksumComputeFrame extends JFrame {
             });
             jmFile.add(jmiClear);
 
-            JMenuItem jmiExit = new JMenuItem("Exit");
-            jmiExit.setMnemonic('x');
-            jmiExit.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Q, InputEvent.CTRL_MASK));
-            jmiExit.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    System.exit(0);
-                }
-            });
-            jmFile.add(jmiExit);
+            if(!application.isMac()) {
+                JMenuItem jmiExit = new JMenuItem("Exit");
+                jmiExit.setMnemonic('x');
+                jmiExit.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Q,
+                        Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+                jmiExit.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        exit(0);
+                    }
+                });
+                jmFile.add(jmiExit);
+            }
 
             jmb.add(jmFile);
         }
 
-        { // Help menu
+        if(!application.isMac()) { // Help menu
             JMenu jmHelp = new JMenu("Help");
             jmHelp.setMnemonic('h');
 
@@ -433,5 +438,51 @@ public class ChecksumComputeFrame extends JFrame {
                 "<html>&copy; WizTools.org<br>Apache 2.0 Licensed</html>",
                 "About",
                 JOptionPane.INFORMATION_MESSAGE);
+    }
+    
+    private void exit(final int status) {
+        System.exit(status);
+    }
+    
+    /* Macify options follow: */
+
+    public class MacApplicationListener implements ApplicationListener {
+        @Override
+        public void handleAbout(ApplicationEvent ae) {
+            showAbout();
+            ae.setHandled(true);
+        }
+
+        @Override
+        public void handleOpenApplication(ApplicationEvent ae) {
+            // do nothing!
+        }
+
+        @Override
+        public void handleOpenFile(ApplicationEvent ae) {
+            openDialog();
+            ae.setHandled(true);
+        }
+
+        @Override
+        public void handlePreferences(ApplicationEvent ae) {
+            // do nothing!
+        }
+
+        @Override
+        public void handlePrintFile(ApplicationEvent ae) {
+            JOptionPane.showMessageDialog(me, "Sorry, printing not implemented");
+        }
+
+        @Override
+        public void handleQuit(ApplicationEvent ae) {
+            exit(0);
+        }
+
+        @Override
+        public void handleReOpenApplication(ApplicationEvent ae) {
+            me.setVisible(true);
+            ae.setHandled(true);
+        }
     }
 }

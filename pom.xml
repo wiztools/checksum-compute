@@ -53,6 +53,25 @@
                 </executions>
             </plugin>
             <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>osxappbundle-maven-plugin</artifactId>
+                <version>1.0-alpha-2</version>
+                <configuration>
+                    <mainClass>org.wiztools.checksumcompute.ChecksumComputeMain</mainClass>
+                    <bundleName>WizTools.org Checksum Compute</bundleName>
+                    <vmOptions>-Dcom.apple.macos.useScreenMenuBar=true</vmOptions>
+                    <iconFile>${basedir}/src/main/app-resources/mac-logo.icns</iconFile>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>bundle</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-release-plugin</artifactId>
                 <configuration>
@@ -66,6 +85,11 @@
             <groupId>org.wiztools.commons</groupId>
             <artifactId>wiztools-commons-lib</artifactId>
             <version>0.3.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.simplericity.macify</groupId>
+            <artifactId>macify</artifactId>
+            <version>1.6</version>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
