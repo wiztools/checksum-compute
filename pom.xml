@@ -4,16 +4,16 @@
     <groupId>org.wiztools</groupId>
     <artifactId>checksum-compute</artifactId>
     <packaging>jar</packaging>
-    <version>0.3.0-SNAPSHOT</version>
+    <version>0.3.0</version>
     <name>checksum-compute</name>
     <url>http://wiztools.googlecode.com</url>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
     <scm>
-        <connection>scm:svn:http://wiztools.googlecode.com/svn/checksum-compute/trunk/</connection>
-        <developerConnection>scm:svn:https://wiztools.googlecode.com/svn/checksum-compute/trunk/</developerConnection>
-        <url>http://code.google.com/p/wiztools/source/browse/</url>
+        <connection>scm:svn:http://wiztools.googlecode.com/svn/checksum-compute/tags/checksum-compute-0.3.0</connection>
+        <developerConnection>scm:svn:https://wiztools.googlecode.com/svn/checksum-compute/tags/checksum-compute-0.3.0</developerConnection>
+        <url>scm:svn:https://wiztools.googlecode.com/svn/checksum-compute/tags/checksum-compute-0.3.0</url>
     </scm>
     <build>
         <plugins>
