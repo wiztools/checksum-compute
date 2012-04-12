@@ -190,7 +190,7 @@ public class ChecksumComputeFrame extends JFrame {
         
         initMacify();
 
-        this.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
+        this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         this.setLocationRelativeTo(null);
         this.setResizable(false);
         this.pack();
