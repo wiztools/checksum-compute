@@ -455,7 +455,8 @@ public class ChecksumComputeFrame extends JFrame {
 
         @Override
         public void handleOpenApplication(ApplicationEvent ae) {
-            // do nothing!
+            me.setVisible(true);
+            ae.setHandled(true);
         }
 
         @Override
