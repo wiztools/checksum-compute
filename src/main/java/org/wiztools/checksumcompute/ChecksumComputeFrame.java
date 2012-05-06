@@ -1,8 +1,8 @@
 package org.wiztools.checksumcompute;
 
 import java.awt.*;
-import java.awt.datatransfer.Clipboard;
-import java.awt.datatransfer.StringSelection;
+import java.awt.datatransfer.*;
+import java.awt.dnd.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -128,7 +128,13 @@ public class ChecksumComputeFrame extends JFrame {
         super("WizTools.org Checksum Compute");
         
         me = this;
-
+        
+        {
+            final DropTargetListener listener = new ChecksumDropTargetListener();
+            new DropTarget(jtf_file, listener);
+            new DropTarget(jb_browse, listener);
+        }
+        
         init();
         initMenuBar();
 
@@ -442,6 +448,54 @@ public class ChecksumComputeFrame extends JFrame {
     
     private void exit(final int status) {
         System.exit(status);
+    }
+    
+    private class ChecksumDropTargetListener implements DropTargetListener {
+
+        @Override
+        public void dragEnter(DropTargetDragEvent dtde) {
+            // nothing!
+        }
+
+        @Override
+        public void dragOver(DropTargetDragEvent dtde) {
+            // nothing!
+        }
+
+        @Override
+        public void dropActionChanged(DropTargetDragEvent dtde) {
+            // nothing!
+        }
+
+        @Override
+        public void dragExit(DropTargetEvent dte) {
+            // nothing!
+        }
+
+        @Override
+        public void drop(DropTargetDropEvent evt) {
+            final int action = evt.getDropAction();
+            evt.acceptDrop(action);
+            try {
+                Transferable data = evt.getTransferable();
+                DataFlavor flavors[] = data.getTransferDataFlavors();
+                if (data.isDataFlavorSupported(DataFlavor.javaFileListFlavor)) {
+                    java.util.List<File> list = (java.util.List<File>) data.getTransferData(
+                        DataFlavor.javaFileListFlavor);
+                    for(File f: list) {
+                        jtf_file.setText(f.getAbsolutePath());
+                    }
+                }
+            } catch (UnsupportedFlavorException e) {
+                e.printStackTrace(System.err);
+            } catch (IOException e) {
+                e.printStackTrace(System.err);
+            } finally {
+                evt.dropComplete(true);
+                repaint();
+            }
+        }
+        
     }
     
     /* Macify options follow: */
