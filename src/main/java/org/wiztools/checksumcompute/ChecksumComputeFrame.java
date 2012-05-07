@@ -354,9 +354,13 @@ public class ChecksumComputeFrame extends JFrame {
         switch(res) {
             case JFileChooser.APPROVE_OPTION:
                 File f = jfcOpen.getSelectedFile();
-                jtf_file.setText(f.getAbsolutePath());
+                doFileSelect(f);
                 break;
         }
+    }
+    
+    private void doFileSelect(final File f) {
+        jtf_file.setText(f.getAbsolutePath());
     }
 
     private void go() {
@@ -483,7 +487,7 @@ public class ChecksumComputeFrame extends JFrame {
                     java.util.List<File> list = (java.util.List<File>) data.getTransferData(
                         DataFlavor.javaFileListFlavor);
                     for(File f: list) {
-                        jtf_file.setText(f.getAbsolutePath());
+                        doFileSelect(f);
                     }
                 }
             } catch (UnsupportedFlavorException e) {
