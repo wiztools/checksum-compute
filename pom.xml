@@ -5,7 +5,7 @@
     <artifactId>checksum-compute</artifactId>
     <packaging>jar</packaging>
     <version>0.5.0-SNAPSHOT</version>
-    <name>checksum-compute</name>
+    <name>WizTools.org Checksum Compute</name>
     <url>https://github.com/wiztools/checksum-compute</url>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -53,9 +53,9 @@
                 </executions>
             </plugin>
             <plugin>
-                <groupId>org.codehaus.mojo</groupId>
+                <groupId>com.agiliumlabs.osxappbundle</groupId>
                 <artifactId>osxappbundle-maven-plugin</artifactId>
-                <version>1.0-alpha-2</version>
+                <version>1.0.0</version>
                 <configuration>
                     <mainClass>org.wiztools.checksumcompute.ChecksumComputeMain</mainClass>
                     <bundleName>WizTools.org Checksum Compute</bundleName>
